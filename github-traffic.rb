@@ -1,6 +1,7 @@
 require 'octokit'
 require 'pp'
 require 'dotenv/load'
+require 'ruby-progressbar'
 
 client = Octokit::Client.new(:login => 'alexrochas', :password => ENV['GITHUB_PASS'], per_page: 200)
 # client.auto_paginate = true
@@ -9,10 +10,16 @@ client = Octokit::Client.new(:login => 'alexrochas', :password => ENV['GITHUB_PA
 repos = client
           .repos
           .select {|repo| !repo.private }
+          .tap {|repos|
+            @progressbar = ProgressBar.create(total: repos.size, length: 50, format: '%t|%B|%c/%C')
+          }
           .map {|repo| repo.full_name }
-          .map { |repo| {:repo => repo, :views => client.views(repo, {accept: "application/vnd.github.squirrel-girl-preview+json"})} }
+          .map { |repo|
+            @progressbar.increment
+            {:repo => repo, :views => client.views(repo, {accept: "application/vnd.github.squirrel-girl-preview+json"})}
+          }
 
-repos.size
+puts "\n"
 
 repos.sort_by { |repo|
     -repo[:views][:uniques]
