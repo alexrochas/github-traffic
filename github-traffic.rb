@@ -4,9 +4,8 @@ require 'dotenv/load'
 require 'ruby-progressbar'
 
 client = Octokit::Client.new(:login => 'alexrochas', :password => ENV['GITHUB_PASS'], per_page: 200)
-# client.auto_paginate = true
+client.auto_paginate = true
 
-# pp client.repos
 repos = client
           .repos
           .select {|repo| !repo.private }
