@@ -10,6 +10,6 @@ gem "pp", "~> 0.1.1"
 
 gem "ruby-progressbar", "~> 1.10"
 
-gem "octokit", "~> 4.14"
+gem "octokit", "~> 4.15", ">= 4.15.0"
 
 gem "dotenv", "~> 2.7"
